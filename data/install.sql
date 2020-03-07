@@ -2,7 +2,7 @@
 -- Add new tab
 --
 INSERT INTO `core_form_tab` (`Tab_ID`, `form`, `title`, `subtitle`, `icon`, `counter`, `sort_id`, `filter_check`, `filter_value`) VALUES
-('event-ticket', 'event-single', 'Tickets', 'Event Tickets', 'fas fa-ticket', '', '1', '', '');
+('event-ticket', 'event-single', 'Tickets', 'Event Tickets', 'fas fa-ticket-alt', '', '1', '', '');
 
 --
 -- Add new partial
@@ -14,7 +14,7 @@ INSERT INTO `core_form_field` (`Field_ID`, `type`, `label`, `fieldkey`, `tab`, `
 -- add button
 --
 INSERT INTO `core_form_button` (`Button_ID`, `label`, `icon`, `title`, `href`, `class`, `append`, `form`, `mode`, `filter_check`, `filter_value`) VALUES
-(NULL, 'Add Ticket', 'fas fa-ticket', 'Add Ticket', '/event/ticket/add/##ID##', 'primary', '', 'event-view', 'link', '', ''),
+(NULL, 'Add Ticket', 'fas fa-ticket-alt', 'Add Ticket', '/event/ticket/add/##ID##', 'primary', '', 'event-view', 'link', '', ''),
 (NULL, 'Save Ticket', 'fas fa-save', 'Save Ticket', '#', 'primary saveForm', '', 'eventticket-single', 'link', '', '');
 
 --
@@ -24,7 +24,11 @@ CREATE TABLE `event_ticket` (
     `event_idfs` int(11) NOT NULL,
     `article_idfs` int(11) NOT NULL,
     `slots` int(10) NOT NULL,
-    `fully_booked` tinyint(1) NOT NULL DEFAULT 0
+    `fully_booked` tinyint(1) NOT NULL DEFAULT 0,
+    `created_by` int(11) NOT NULL,
+    `created_date` datetime NOT NULL,
+    `modified_by` int(11) NOT NULL,
+    `modified_date` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 ALTER TABLE `event_ticket`
@@ -40,7 +44,7 @@ INSERT INTO `core_form` (`form_key`, `label`, `entity_class`, `entity_tbl_class`
 -- add form tab
 --
 INSERT INTO `core_form_tab` (`Tab_ID`, `form`, `title`, `subtitle`, `icon`, `counter`, `sort_id`, `filter_check`, `filter_value`) VALUES
-('ticket-base', 'eventticket-single', 'Ticket', 'Ticket Data', 'fas fa-history', '', '1', '', '');
+('ticket-base', 'eventticket-single', 'Ticket', 'Ticket Data', 'fas fa-ticket-alt', '', '1', '', '');
 
 --
 -- add address fields

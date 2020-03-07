@@ -1,0 +1,27 @@
+<?php
+# Only show partial if data is set
+if(array_key_exists('event_ticket',$this->aPartialData)) {
+    # add address form fields
+    $oTickets = $this->aPartialData['event_ticket']['oTickets'];
+    $aFields = $this->aPartialData['event_ticket']['aFormFields'];
+
+    if(count($oTickets) == 0) { ?>
+        <div class="alert alert-info px-2 py-2">
+            <?=$this->translate('No History yet')?>
+        </div>
+    <?php } else { ?>
+        <ul class="list-group">
+        <?php
+        foreach($oTickets as $oTk) { ?>
+            <li class="list-group-item">
+                <div class="row">
+                    <?= $this->partial('partial/viewformfields', ['sFormName' => 'eventticket-single', 'sTab' => 'ticket-base', 'oItem' => $oTk, 'aFormFieldsByTab' => $aFields]); ?>
+                </div>
+            </li>
+        <?php
+        }
+        ?>
+        </ul>
+    <?php
+    }
+}

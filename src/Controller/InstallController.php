@@ -24,6 +24,7 @@ use Laminas\View\Model\ViewModel;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\TableGateway\TableGateway;
 use Laminas\Db\ResultSet\ResultSet;
+use OnePlace\Event\Ticket\Model\TicketTable;
 
 class InstallController extends CoreUpdateController {
     /**
@@ -33,7 +34,7 @@ class InstallController extends CoreUpdateController {
      * @param HistoryTable $oTableGateway
      * @since 1.0.0
      */
-    public function __construct(AdapterInterface $oDbAdapter, HistoryTable $oTableGateway, $oServiceManager)
+    public function __construct(AdapterInterface $oDbAdapter, TicketTable $oTableGateway, $oServiceManager)
     {
         $this->oTableGateway = $oTableGateway;
         $this->sSingleForm = 'eventticket-single';

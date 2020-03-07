@@ -22,9 +22,8 @@ use Laminas\Db\TableGateway\TableGateway;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\EventManager\EventInterface as Event;
 use Laminas\ModuleManager\ModuleManager;
-use OnePlace\Contact\Ticket\Controller\TicketController;
-use OnePlace\Contact\Ticket\Model\TicketTable;
-use OnePlace\Contact\Model\ContactTable;
+use OnePlace\Event\Ticket\Controller\TicketController;
+use OnePlace\Event\Ticket\Model\TicketTable;
 
 class Module {
     /**
