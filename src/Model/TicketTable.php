@@ -59,9 +59,14 @@ class TicketTable extends CoreEntityTable {
      * @since 1.0.0
      */
     public function saveSingle(Ticket $oTicket) {
-        $aData = [];
+        $aData = [
+            'article_idfs' => $oTicket->article_idfs,
+            'event_idfs' => $oTicket->event_idfs,
+            'slots' => $oTicket->slots,
+            'fully_booked' => $oTicket->fully_booked,
+        ];
 
-        $aData = $this->attachDynamicFields($aData,$oTicket);
+        //$aData = $this->attachDynamicFields($aData,$oTicket);
 
         $id = (int) $oTicket->id;
 

@@ -18,6 +18,9 @@ namespace OnePlace\Event\Ticket\Model;
 use Application\Model\CoreEntityModel;
 
 class Ticket extends CoreEntityModel {
+    public $article_idfs;
+    public $slots;
+
     /**
      * History constructor.
      *

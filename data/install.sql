@@ -21,6 +21,7 @@ INSERT INTO `core_form_button` (`Button_ID`, `label`, `icon`, `title`, `href`, `
 -- create event ticket
 --
 CREATE TABLE `event_ticket` (
+    `Ticket_ID` int(11) NOT NULL,
     `event_idfs` int(11) NOT NULL,
     `article_idfs` int(11) NOT NULL,
     `slots` int(10) NOT NULL,
@@ -32,7 +33,10 @@ CREATE TABLE `event_ticket` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 ALTER TABLE `event_ticket`
-    ADD PRIMARY KEY (`event_idfs`,`article_idfs`);
+    ADD PRIMARY KEY (`Ticket_ID`);
+
+ALTER TABLE `event_ticket`
+    MODIFY `Ticket_ID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- add history form
@@ -50,7 +54,9 @@ INSERT INTO `core_form_tab` (`Tab_ID`, `form`, `title`, `subtitle`, `icon`, `cou
 -- add address fields
 --
 INSERT INTO `core_form_field` (`Field_ID`, `type`, `label`, `fieldkey`, `tab`, `form`, `class`, `url_view`, `url_list`, `show_widget_left`, `allow_clear`, `readonly`, `tbl_cached_name`, `tbl_class`, `tbl_permission`) VALUES
-(NULL, 'text', 'Comment', 'comment', 'ticket-base', 'eventticket-single', 'col-md-6', '', '', '0', '1', '0', '', '', ''),
+(NULL, 'text', 'Ticket Name', 'label', 'ticket-base', 'eventticket-single', 'col-md-4', '', '', '0', '1', '0', '', '', ''),
+(NULL, 'currency', 'Ticket Price', 'ticket_price', 'ticket-base', 'eventticket-single', 'col-md-2', '', '', '0', '1', '0', '', '', ''),
+(NULL, 'number', 'Tickets available', 'slots_total', 'ticket-base', 'eventticket-single', 'col-md-2', '', '', '0', '1', '0', '', '', ''),
 (NULL, 'hidden', 'Event', 'event_idfs', 'ticket-base', 'eventticket-single', 'col-md-3', '', '/', '0', '1', '0', '', '', '');
 
 --

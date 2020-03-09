@@ -19,6 +19,9 @@ namespace OnePlace\Event\Ticket\Controller;
 
 use Application\Controller\CoreEntityController;
 use Application\Model\CoreEntityModel;
+use OnePlace\Article\Model\ArticleTable;
+use OnePlace\Article\Variant\Model\VariantTable;
+use OnePlace\Event\Model\EventTable;
 use OnePlace\Event\Ticket\Model\TicketTable;
 use Laminas\View\Model\ViewModel;
 use Laminas\Db\Adapter\AdapterInterface;
@@ -78,6 +81,22 @@ class TicketController extends CoreEntityController {
             return [];
         }
 
+        # Try to get adress table
+        try {
+            $oVarTbl = CoreEntityController::$oServiceManager->get(VariantTable::class);
+        } catch(\RuntimeException $e) {
+            //echo '<div class="alert alert-danger"><b>Error:</b> Could not load address table</div>';
+            return [];
+        }
+
+        # Try to get adress table
+        try {
+            $oArtTbl = CoreEntityController::$oServiceManager->get(ArticleTable::class);
+        } catch(\RuntimeException $e) {
+            //echo '<div class="alert alert-danger"><b>Error:</b> Could not load address table</div>';
+            return [];
+        }
+
         if(!isset($oTicketTbl)) {
             return [];
         }
@@ -90,6 +109,11 @@ class TicketController extends CoreEntityController {
             # get primary address
             if (count($oHistories) > 0) {
                 foreach ($oHistories as $oAddr) {
+                    $oVar = $oVarTbl->getSingle($oAddr->article_idfs);
+                    $oAddr->label = $oVar->getLabel();
+                    $oAddr->ticket_price = $oVar->price;
+                    $oAddr->slots_total = $oAddr->slots;
+                    $oAddr->tickets_booked = 4;
                     $aHistories[] = $oAddr;
                 }
             }
@@ -100,7 +124,7 @@ class TicketController extends CoreEntityController {
             # must be named aPartialExtraData
             'aPartialExtraData' => [
                 # must be name of your partial
-                'event_tickets'=> [
+                'event_ticket'=> [
                     'oTickets'=>$aHistories,
                     'oForm'=>$oForm,
                     'aFormFields'=>$aFieldsByTab,
@@ -109,7 +133,48 @@ class TicketController extends CoreEntityController {
         ];
     }
 
-    public function attachTicketToEvent($oItem,$aRawData) {
+    public function attachTicketToEvent($oItem,$aRawData)
+    {
+        // check for article
+        $oArtTbl = CoreEntityController::$oServiceManager->get(ArticleTable::class);
+        $oVarTbl = CoreEntityController::$oServiceManager->get(VariantTable::class);
+        $oEventTbl = CoreEntityController::$oServiceManager->get(EventTable::class);
+        $oEvent = $oEventTbl->getSingle($aRawData['ref_idfs']);
+
+        try {
+            $oBaseArticle = $oArtTbl->getSingle($aRawData['ref_idfs'],'ref_idfs');
+        } catch(\RuntimeException $e) {
+            $oNewArt = $oArtTbl->generateNew();
+            $aBaseArtData = [
+                'label' => 'Event Tickets '.$oEvent->getLabel(),
+                'ref_idfs' => $aRawData['ref_idfs'],
+                'ref_type' => 'event',
+                'created_by' => CoreEntityController::$oSession->oUser->getID(),
+                'created_date' => date('Y-m-d H:i:s',time()),
+                'modified_by' => CoreEntityController::$oSession->oUser->getID(),
+                'modified_date' => date('Y-m-d H:i:s',time()),
+            ];
+            $oNewArt->exchangeArray($aBaseArtData);
+            $iNewArtID = $oArtTbl->saveSingle($oNewArt);
+            $oBaseArticle = $oArtTbl->getSingle($iNewArtID);
+        }
+
+        $oNewTicket = $oVarTbl->generateNew();
+        $aTicketData = [
+            'article_idfs' => $oBaseArticle->getID(),
+            'label' => $aRawData[$this->sSingleForm.'_label'],
+            'price' => (float)$aRawData[$this->sSingleForm.'_ticket_price'],
+            'created_by' => CoreEntityController::$oSession->oUser->getID(),
+            'created_date' => date('Y-m-d H:i:s',time()),
+            'modified_by' => CoreEntityController::$oSession->oUser->getID(),
+            'modified_date' => date('Y-m-d H:i:s',time()),
+        ];
+        $oNewTicket->exchangeArray($aTicketData);
+        $iTicketID = $oVarTbl->saveSingle($oNewTicket);
+
+        $oItem->article_idfs = $iTicketID;
+        $oItem->slots = $aRawData[$this->sSingleForm.'_slots_total'];
+        $oItem->fully_booked = 0;
         $oItem->event_idfs = $aRawData['ref_idfs'];
 
         return $oItem;
